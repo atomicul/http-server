@@ -1,17 +1,61 @@
 import { useRef, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { FaRegCircle } from "react-icons/fa";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { CgSpinnerTwo } from "react-icons/cg";
+
 
 import FileAdder, { RefType as FileAdderRef } from "./FileAdder";
 import humanFileSize from "./utils/humanReadableFileSize";
+import UiFile, { Status } from "./types/UiFile";
+
+const statusIconMap: Map<Status, any> = new Map([
+  ["ready", <FaRegCircle />],
+  ["uploading", <CgSpinnerTwo className="animate-spin" />],
+  ["done", <FaRegCheckCircle />]
+]);
 
 function App() {
   const fileAdderRef = useRef<null | FileAdderRef>(null);
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<UiFile[]>([]);
 
+  const setStatus = (file: UiFile, status: Status) => {
+    setFiles((files) => {
+      const filesCopy = structuredClone(files);
+
+      const fileToModify = filesCopy.find(f => f.id === file.id)
+      if (fileToModify)
+        fileToModify.status = status;
+
+      return filesCopy;
+    });
+  }
 
   const handleAddFiles = (f: File[]) => {
-    setFiles([...files, ...f]);
+    setFiles([...files, ...f.map((f) => new UiFile(f))]);
+  }
+
+  const handleRemoveFiles = (file: UiFile) => { setFiles(fs => fs.filter(f => f.id !== file.id)) }
+
+  const handleUploadFile = async (file: UiFile) => {
+    if (file.status !== "ready")
+      return;
+
+    const url = "http://localhost:3001";
+
+    setStatus(file, "ready");
+
+    const res = await fetch(url + "/" + file.name, {
+      method: "POST",
+      body: file.file
+    })
+
+    if (res.ok) {
+      setStatus(file, "done");
+    } else {
+      setStatus(file, "ready");
+    }
   }
 
   return <main className="h-svh p-8 space-y-8 relative">
@@ -24,17 +68,23 @@ function App() {
           <th>Name</th>
           <th>Filetype</th>
           <th>Size</th>
+          <th>Status</th>
           <th>Delete</th>
         </tr>
       </thead>
       <tbody>
         {files.map((file, idx) => (
-          <tr key={file.name}>
+          <tr key={file.id}>
             <th>{idx + 1}</th>
             <td>{file.name}</td>
-            <td>{file.type}</td>
-            <td>{humanFileSize(file.size)}</td>
-            <td><button className="btn btn-xs btn-error btn-link uppercase text-xl"><MdDelete /></button></td>
+            <td>{file.file.type}</td>
+            <td>{humanFileSize(file.file.size)}</td>
+            <td>{<button onClick={() => handleUploadFile(file)} className="text-xl text-center relative left-1">{statusIconMap.get(file.status)}</button>}</td>
+            <td className="relative left-1">
+              <button onClick={() => handleRemoveFiles(file)} className="btn btn-xs btn-error btn-link uppercase text-xl">
+                <MdDelete />
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>
