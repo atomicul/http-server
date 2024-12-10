@@ -51,6 +51,13 @@ function App() {
     handleAddFiles(files);
   }
 
+  const handlePaste = (ev: React.ClipboardEvent<HTMLElement>) => {
+    ev.preventDefault();
+
+    const files = Array.from(ev.clipboardData.files);
+    handleAddFiles(files);
+  }
+
   const handleUploadFile = async (file: UiFile) => {
     if (!file.uploadable)
       return;
@@ -78,6 +85,7 @@ function App() {
   return <main
     onDrop={handleDrop}
     onDragOver={(ev) => { ev.preventDefault() }}
+    onPaste={handlePaste}
     className="h-svh p-8 space-y-8 relative overflow-hidden flex flex-col">
 
     <h1 className="text-xl">File uploader</h1>
