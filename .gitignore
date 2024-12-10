@@ -13,3 +13,4 @@ frontend/dist-ssr
 frontend/*.local
 backend/.idea
 backend/cmake-build-debug
+backend/build

@@ -1,12 +1,14 @@
 import { v4 } from "uuid";
 
-export type Status = "ready" | "uploading" | "done";
+export type Status = "ready" | "uploading" | "done" | "error";
 
 class UiFile {
-  status: "ready" | "uploading" | "done";
+  status: Status;
   readonly file: File;
   name: string;
   readonly id: string
+
+  get uploadable() { return this.status === "ready" || this.status === "error" }
 
   constructor(f: File) {
     this.file = f;
