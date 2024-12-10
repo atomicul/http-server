@@ -40,6 +40,17 @@ function App() {
 
   const handleRemoveFiles = (file: UiFile) => { setFiles(fs => fs.filter(f => f.id !== file.id)) }
 
+  const handleDrop = (ev: React.DragEvent<HTMLElement>) => {
+    ev.preventDefault();
+
+    const files = Array
+      .from(ev.dataTransfer.items)
+      .map(item => item.getAsFile())
+      .filter(file => file !== null);
+
+    handleAddFiles(files);
+  }
+
   const handleUploadFile = async (file: UiFile) => {
     if (!file.uploadable)
       return;
@@ -64,7 +75,11 @@ function App() {
     }
   }
 
-  return <main className="h-svh p-8 space-y-8 relative overflow-hidden flex flex-col">
+  return <main
+    onDrop={handleDrop}
+    onDragOver={(ev) => { ev.preventDefault() }}
+    className="h-svh p-8 space-y-8 relative overflow-hidden flex flex-col">
+
     <h1 className="text-xl">File uploader</h1>
 
     <section className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
