@@ -3,8 +3,6 @@ project(main)
 
 set(CMAKE_CXX_STANDARD 20)
 
-include_directories(include)
-
 add_executable(main main.cpp
         configuration/abstract/IConfiguration.h
         configuration/Configuration.cpp
@@ -12,6 +10,5 @@ add_executable(main main.cpp
         SingletonProvider.cpp
         SingletonProvider.h)
 
-find_package(asio CONFIG REQUIRED)
-find_package(Crow CONFIG REQUIRED)
-target_link_libraries(main PUBLIC Crow::Crow asio::asio)
+find_package(Crow REQUIRED CONFIG)
+target_link_libraries(main PRIVATE Crow::Crow asio::asio)
