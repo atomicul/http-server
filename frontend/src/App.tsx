@@ -62,12 +62,10 @@ function App() {
     if (!file.uploadable)
       return;
 
-    const url = "http://localhost:3001";
-
     setStatus(file, "uploading");
 
     try {
-      const res = await fetch(url + "/" + file.name, {
+      const res = await fetch(SERVER_URL + "/" + file.name, {
         method: "POST",
         body: file.file
       })
@@ -82,11 +80,14 @@ function App() {
     }
   }
 
+  const handleUploadAll = () => { files.forEach(f => handleUploadFile(f)) }
+  const handleRemoveUploaded = () => { setFiles(files.filter(f => f.status !== "done")); }
+
   return <main
     onDrop={handleDrop}
     onDragOver={(ev) => { ev.preventDefault() }}
     onPaste={handlePaste}
-    className="h-svh p-8 space-y-8 relative overflow-hidden flex flex-col">
+    className="h-svh p-8 gap-6 overflow-hidden flex flex-col">
 
     <h1 className="text-xl">File uploader</h1>
 
@@ -120,16 +121,22 @@ function App() {
         </tbody>
       </table>
     </section>
+    <div className="flex justify-between">
+      <div className="space-x-2">
+        <button onClick={handleUploadAll} className={`btn ${files.some(f => f.uploadable) || "btn-disabled"}`}>Upload all files</button>
+        <button onClick={handleRemoveUploaded} className={`btn ${files.some(f => f.status === "done") || "btn-disabled"}`}>Remove uploaded</button>
+      </div>
 
-    <button
-      onClick={() => { fileAdderRef.current?.getFiles().then(files => { handleAddFiles(files) }) }}
-      className="btn btn-circle absolute right-4 bottom-4">
+      <button
+        onClick={() => { fileAdderRef.current?.getFiles().then(files => { handleAddFiles(files) }) }}
+        className="btn btn-circle">
 
-      <FaPlus />
-    </button>
+        <FaPlus />
+      </button>
+    </div>
 
     <FileAdder ref={fileAdderRef} />
-  </main>
+  </main >
 }
 
 export default App
