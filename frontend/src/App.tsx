@@ -24,7 +24,7 @@ function App() {
 
   const setStatus = (file: UiFile, status: Status) => {
     setFiles((files) => {
-      const filesCopy = structuredClone(files);
+      const filesCopy = Array.from(files.map(file => file.clone()));
 
       const fileToModify = filesCopy.find(f => f.id === file.id)
       if (fileToModify)
@@ -35,7 +35,7 @@ function App() {
   }
 
   const handleAddFiles = (f: File[]) => {
-    setFiles([...files, ...f.map((f) => new UiFile(f))]);
+    setFiles([...files, ...f.map((f) => UiFile.fromFile(f))]);
   }
 
   const handleRemoveFiles = (file: UiFile) => { setFiles(fs => fs.filter(f => f.id !== file.id)) }
@@ -64,7 +64,7 @@ function App() {
 
     const url = "http://localhost:3001";
 
-    setStatus(file, "ready");
+    setStatus(file, "uploading");
 
     try {
       const res = await fetch(url + "/" + file.name, {
