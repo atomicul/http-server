@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS base
+FROM --platform=linux/amd64 ubuntu:24.04 AS base
 
 FROM base AS build
 
