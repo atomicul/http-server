@@ -14,7 +14,10 @@ services:
       - "./uploads:/uploads"
   frontend:
     image: ghcr.io/atomicul/http-uploader/frontend
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_BACKEND_PORT: 3001
     pull_policy: missing
     restart: on-failure:3
     ports:
