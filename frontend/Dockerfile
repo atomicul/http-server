@@ -3,6 +3,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn
 COPY . .
+ARG VITE_BACKEND_PORT=3001
 RUN yarn build
 
 FROM nginx:alpine AS runner

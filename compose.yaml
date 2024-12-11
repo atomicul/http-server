@@ -1,6 +1,9 @@
 services:
   backend:
+    image: ghcr.io/atomicul/http-uploader/backend
     build: ./backend
+    pull_policy: missing
+    restart: on-failure:3
     environment:
       PORT: "3001"
       MAX_FILE_SIZE: "0"
@@ -10,8 +13,12 @@ services:
     volumes:
       - "./uploads:/uploads"
   frontend:
-    build: ./frontend
-    environment:
-      VITE_BACKEND_PORT: "3001"
+    image: ghcr.io/atomicul/http-uploader/frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_BACKEND_PORT: 3001
+    pull_policy: missing
+    restart: on-failure:3
     ports:
       - "3000:80"
