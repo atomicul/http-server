@@ -17,7 +17,5 @@ services:
     build: ./frontend
     pull_policy: missing
     restart: on-failure:3
-    environment:
-      VITE_BACKEND_PORT: "3001"
     ports:
       - "3000:80"
