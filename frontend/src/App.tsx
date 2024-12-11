@@ -65,7 +65,10 @@ function App() {
     setStatus(file, "uploading");
 
     try {
-      const res = await fetch(SERVER_URL + "/" + file.name, {
+      let url = import.meta.env.VITE_BACKEND_URL;
+      url ??= `http://${location.hostname}:${import.meta.env.VITE_BACKEND_PORT ?? 80}`
+
+      const res = await fetch(url + "/" + file.name, {
         method: "POST",
         body: file.file
       })
