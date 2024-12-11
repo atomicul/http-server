@@ -1,0 +1,17 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      PORT: "3001"
+      MAX_FILE_SIZE: "0"
+      SAVE_DIRECTORY: /uploads
+    ports:
+      - "3001:3001"
+    volumes:
+      - "./uploads:/uploads"
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_BACKEND_PORT: "3001"
+    ports:
+      - "3000:80"
