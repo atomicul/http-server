@@ -26,4 +26,3 @@ All of the following variables are used at build time and are replaced in the co
 - `MAX_FILE_SIZE`: Maximum acceptable size in bytes for a single file (default: 0)\
   If set to 0, then the size is unlimited.
 - `SAVE_DIRECTORY`: Directory to write the files to (default: /uploads)\
-  If on docker, be aware that the process does not have permissions to access other directories than the default!

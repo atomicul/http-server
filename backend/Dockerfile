@@ -41,8 +41,6 @@ COPY --from=build /build/cmake/main ./main
 
 RUN chmod +x ./main
 
-RUN mkdir /uploads
-
 RUN useradd crow --create-home --shell /bin/bash
 
 COPY docker-entrypoint.sh entrypoint.sh
