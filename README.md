@@ -18,9 +18,9 @@ docker compose up
 ### Frontend app:
 All of the following variables are used at build time and are replaced in the compiled javascript:
   - `VITE_BACKEND_URL`: The URL the files are POSTed to (default: *unset*)
-  - `VITE_BACKEND_URL`: The port of the backend host. (default: 3001)\
+  - `VITE_BACKEND_PORT`: The port of the backend host. (default: 3001)\
     In this case, the hostname part of the URL is inferred from the address bar.
-    If `VITE_BACKEND_URL` is set, it will take precedence over this variable and so it will be ignored.
+    If `VITE_BACKEND_URL` is set, it will take precedence over this variable and `VITE_BACKEND_PORT` is ignored.
 ### Backend app:
 - `PORT`: The port to run on (default: 3001)
 - `MAX_FILE_SIZE`: Maximum acceptable size in bytes for a single file (default: 0)\
