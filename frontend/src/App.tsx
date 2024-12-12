@@ -7,7 +7,7 @@ import { FaRegTimesCircle } from "react-icons/fa";
 import { CgSpinnerTwo } from "react-icons/cg";
 
 
-import FileAdder, { RefType as FileAdderRef } from "./FileAdder";
+import FileAdder, { RefType as FileAdderRef } from "./components/FileAdder";
 import humanFileSize from "./utils/humanReadableFileSize";
 import UiFile, { Status } from "./types/UiFile";
 
