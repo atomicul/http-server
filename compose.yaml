@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ghcr.io/atomicul/http-uploader/backend
+    image: ghcr.io/atomicul/http-uploader/backend:main
     build: ./backend
     pull_policy: missing
     restart: on-failure:3
@@ -13,7 +13,7 @@ services:
     volumes:
       - "./uploads:/uploads"
   frontend:
-    image: ghcr.io/atomicul/http-uploader/frontend
+    image: ghcr.io/atomicul/http-uploader/frontend:main
     build:
       context: ./frontend
       args:
