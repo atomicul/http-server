@@ -35,15 +35,19 @@ RUN make
 
 FROM base
 
-COPY --from=build /build/cmake/main ./app
+WORKDIR /app
 
-RUN chmod +x ./app
+COPY --from=build /build/cmake/main ./main
+
+RUN chmod +x ./main
 
 RUN mkdir /uploads
 
-RUN useradd crow --create-home --shell /bin/bash && \
-  chown -R crow:crow /uploads
-USER crow:crow
+RUN useradd crow --create-home --shell /bin/bash
+
+COPY docker-entrypoint.sh entrypoint.sh
+
+RUN chmod +x entrypoint.sh
 
 ENV SAVE_DIRECTORY="/uploads" \
   MAX_FILE_SIZE=0 \
@@ -52,4 +56,5 @@ ENV SAVE_DIRECTORY="/uploads" \
 EXPOSE 3001
 VOLUME /uploads
 
-CMD ["./app"]
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["./main"]
