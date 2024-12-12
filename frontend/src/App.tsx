@@ -1,38 +1,36 @@
 import { useRef, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import { FaRegCircle } from "react-icons/fa";
-import { FaRegCheckCircle } from "react-icons/fa";
-import { FaRegTimesCircle } from "react-icons/fa";
-import { CgSpinnerTwo } from "react-icons/cg";
 
 
 import FileAdder, { RefType as FileAdderRef } from "./components/FileAdder";
 import humanFileSize from "./utils/humanReadableFileSize";
 import UiFile, { Status } from "./types/UiFile";
-
-const statusIconMap: Map<Status, any> = new Map([
-  ["ready", <FaRegCircle />],
-  ["uploading", <CgSpinnerTwo className="animate-spin" />],
-  ["done", <FaRegCheckCircle />],
-  ["error", <FaRegTimesCircle />],
-]);
+import StatusIcon from "./components/StatusIcon";
+import axios from "axios";
 
 function App() {
   const fileAdderRef = useRef<null | FileAdderRef>(null);
   const [files, setFiles] = useState<UiFile[]>([]);
 
-  const setStatus = (file: UiFile, status: Status) => {
+  interface FileProperties { status?: Status; progress?: number }
+  const setFileProperties = (file: UiFile, properties: FileProperties) => {
     setFiles((files) => {
       const filesCopy = Array.from(files.map(file => file.clone()));
 
       const fileToModify = filesCopy.find(f => f.id === file.id)
-      if (fileToModify)
-        fileToModify.status = status;
+      if (fileToModify) {
+        if (properties.status)
+          fileToModify.status = properties.status;
+        if (properties.progress)
+          fileToModify.progress = properties.progress;
+      }
 
       return filesCopy;
     });
   }
+  const setFileStatus = (file: UiFile, status: Status) => setFileProperties(file, { status });
+  const setFileProgress = (file: UiFile, progress: number) => setFileProperties(file, { progress });
 
   const handleAddFiles = (f: File[]) => {
     setFiles([...files, ...f.map((f) => UiFile.fromFile(f))]);
@@ -62,24 +60,24 @@ function App() {
     if (!file.uploadable)
       return;
 
-    setStatus(file, "uploading");
+    setFileStatus(file, "uploading");
 
     try {
       let url = import.meta.env.VITE_BACKEND_URL;
       url ??= `http://${location.hostname}:${import.meta.env.VITE_BACKEND_PORT ?? 80}`
 
-      const res = await fetch(url + "/" + file.name, {
-        method: "POST",
-        body: file.file
+      const res = await axios.post(url + "/" + file.name, file.file, {
+        onUploadProgress: (p) => { setFileProgress(file, p.loaded / (p.total ?? Infinity)) }
       })
 
-      if (res.ok) {
-        setStatus(file, "done");
+      if (res.status >= 200 && res.status < 300) {
+        setFileStatus(file, "done");
       } else {
-        setStatus(file, "error");
+        setFileStatus(file, "error");
       }
-    } catch {
-      setStatus(file, "error");
+    } catch (err) {
+      console.error(err);
+      setFileStatus(file, "error");
     }
   }
 
@@ -113,7 +111,7 @@ function App() {
               <td className="max-w-16 truncate">{file.name}</td>
               <td>{file.file.type || "other"}</td>
               <td>{humanFileSize(file.file.size)}</td>
-              <td>{<button onClick={() => handleUploadFile(file)} className="text-xl text-center relative left-1">{statusIconMap.get(file.status)}</button>}</td>
+              <td><StatusIcon handleUpload={handleUploadFile} file={file} /></td>
               <td className="relative left-1">
                 <button onClick={() => handleRemoveFiles(file)} className="btn btn-xs btn-error btn-link uppercase text-xl">
                   <MdDelete />
