@@ -25,4 +25,4 @@ All of the following variables are used at build time and are replaced in the co
 - `PORT`: The port to run on (default: 3001)
 - `MAX_FILE_SIZE`: Maximum acceptable size in bytes for a single file (default: 0)\
   If set to 0, then the size is unlimited.
-- `SAVE_DIRECTORY`: Directory to write the files to (default: /uploads)\
+- `SAVE_DIRECTORY`: Directory to write the files to (default: /uploads)
