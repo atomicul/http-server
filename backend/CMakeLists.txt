@@ -12,4 +12,4 @@ add_executable(main main.cpp
         SingletonProvider.h)
 
 find_package(Crow REQUIRED CONFIG)
-target_link_libraries(main PRIVATE Crow::Crow asio::asio)
+target_link_libraries(main PRIVATE Crow::Crow)
