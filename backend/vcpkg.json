@@ -1,5 +1,15 @@
 {
-  "dependencies": [
-    "crow"
-  ]
+    "dependencies": [
+        {
+            "name": "crow",
+            "version>=": "1.0-5"
+        }
+    ],
+    "builtin-baseline": "57c08a3223a1ec03c3a31986ee38d32e90b6039c",
+    "overrides": [
+        {
+            "name": "crow",
+            "version": "1.0-5"
+        }
+    ]
 }

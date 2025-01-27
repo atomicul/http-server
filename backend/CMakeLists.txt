@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.30)
 project(main)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(main main.cpp
         configuration/abstract/IConfiguration.h
@@ -11,4 +12,4 @@ add_executable(main main.cpp
         SingletonProvider.h)
 
 find_package(Crow REQUIRED CONFIG)
-target_link_libraries(main PRIVATE Crow::Crow asio::asio)
+target_link_libraries(main PRIVATE Crow::Crow)
