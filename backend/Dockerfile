@@ -10,20 +10,18 @@ RUN apt-get update -qq && \
 
 RUN update-ca-certificates -f
 
+ARG VCPKG_ROOT="$HOME/vcpkg"
+ARG PATH="$PATH:$VCPKG_ROOT"
+ARG CMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+
 # Install cmake
 RUN wget -qO /tmp/cmake.sh https://github.com/Kitware/CMake/releases/download/v3.30.6/cmake-3.30.6-linux-x86_64.sh
 RUN chmod +x /tmp/cmake.sh
 RUN /tmp/cmake.sh --skip-license --prefix=/usr/local/ --exclude-subdir
 
 # Install vcpkg
-RUN wget -qO /tmp/vcpkg.tar.gz https://github.com/microsoft/vcpkg/archive/master.tar.gz
-RUN mkdir /opt/vcpkg
-RUN tar xf /tmp/vcpkg.tar.gz --strip-components=1 -C /opt/vcpkg
-RUN /opt/vcpkg/bootstrap-vcpkg.sh
-
-ARG VCPKG_ROOT=/opt/vcpkg/
-ARG PATH="$PATH:$VCPKG_ROOT"
-ARG CMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+RUN git clone https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+RUN $VCPKG_ROOT/bootstrap-vcpkg.sh
 
 COPY . .
 
