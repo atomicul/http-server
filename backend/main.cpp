@@ -1,4 +1,5 @@
-#include <filesystem>
+#include <iostream>
+
 #include <crow.h>
 #include <crow/middlewares/cors.h>
 
@@ -8,8 +9,6 @@ using namespace http_uploader;
 
 int main() {
     crow::App<crow::CORSHandler> app;
-    auto& cors = app.get_middleware<crow::CORSHandler>();
-    cors.global().origin("*");
 
     auto *config = SingletonProvider::configuration();
 
