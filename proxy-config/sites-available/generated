@@ -1,0 +1,13 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name _;
+    location / {
+        rewrite ^/(.*) /$1  break;
+        proxy_pass http://frontend:80$uri$is_args$args;
+    }
+    location /api/ {
+        rewrite ^/api/(.*) /$1  break;
+        proxy_pass http://backend:3001$uri$is_args$args;
+    }
+}
