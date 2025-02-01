@@ -9,23 +9,22 @@
 
 namespace http_uploader::configuration {
 std::string Configuration::location() {
-  return formatAsDirectory(getEnv("SAVE_DIRECTORY"));
+  return formatAsDirectory(getEnv("SAVE_DIRECTORY").value_or("/uploads"));
 }
 
 unsigned long long Configuration::max_size() {
-  const unsigned long long num = std::stoull(getEnv("MAX_FILE_SIZE"));
+  const unsigned long long num = std::stoull(getEnv("MAX_FILE_SIZE").value_or("0"));
   if (num == 0)
     return ULLONG_MAX;
   return num;
 }
 
-unsigned int Configuration::port() { return std::stoi(getEnv("PORT")); }
+unsigned int Configuration::port() { return std::stoi(getEnv("PORT").value_or("3001")); }
 
-std::string Configuration::getEnv(const char *name) {
+std::optional<std::string> Configuration::getEnv(const char *name) {
   const char *value = std::getenv(name);
   if (value == nullptr)
-    throw std::invalid_argument(std::string{} +
-                                "Environment variable not set: " + name);
+      return std::nullopt;
 
   return value;
 }

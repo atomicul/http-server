@@ -4,7 +4,7 @@ COPY package.json yarn.lock ./
 RUN yarn
 COPY . .
 ARG VITE_BACKEND_URL
-ARG VITE_BACKEND_PORT=3001
+ARG VITE_BACKEND_PORT
 RUN yarn build
 
 FROM nginx:alpine AS runner

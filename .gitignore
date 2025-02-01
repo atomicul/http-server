@@ -16,3 +16,4 @@ backend/cmake-build-debug
 backend/build
 frontend/.env
 uploads
+backend/.cache/clangd/index

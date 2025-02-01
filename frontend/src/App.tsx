@@ -63,13 +63,17 @@ function App() {
     setFileStatus(file, "uploading");
 
     try {
-      let url: string = import.meta.env.VITE_BACKEND_URL;
-      url ??= `http://${location.hostname}:${import.meta.env.VITE_BACKEND_PORT ?? 80}`;
+      let url: string | null = null; 
+      url ??= import.meta.env.VITE_BACKEND_URL;
+      url ??= import.meta.env.VITE_BACKEND_PORT &&
+          `http://${location.hostname}:${import.meta.env.VITE_BACKEND_PORT}`;
+      url ??= '/api';
 
       if(url.endsWith("/")) {
-        url = url.substring(0, url.length-1)
+        url = url.substring(0, url.length-1);
       }
 
+      console.log('requesting at', url + "/" + file.name);
       const res = await axios.post(url + "/" + file.name, file.file, {
         onUploadProgress: (p) => { setFileProgress(file, p.loaded / (p.total ?? Infinity)) }
       })

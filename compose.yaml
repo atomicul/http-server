@@ -4,21 +4,39 @@ services:
     build: ./backend
     pull_policy: missing
     restart: on-failure:3
-    environment:
-      PORT: "3001"
-      MAX_FILE_SIZE: "0"
-      SAVE_DIRECTORY: /uploads
-    ports:
-      - "3001:3001"
+    # environment: # env vars reference in README
+    #   PORT: "3001"
+    #   MAX_FILE_SIZE: "0"
+    #   SAVE_DIRECTORY: /uploads
+    # ports:
+      # - "3001:3001" # no need to bind this port if we are reaching this through the proxy
     volumes:
       - "./uploads:/uploads"
+
   frontend:
     image: ghcr.io/atomicul/http-uploader/frontend:main
     build:
       context: ./frontend
-      args:
-        VITE_BACKEND_PORT: 3001
-    pull_policy: missing
+      # args: # build args reference in README
+      #   VITE_BACKEND_PORT: 3001
+      #   VITE_BACKEND_URL: http://example.com/
+    pull_policy: build
     restart: on-failure:3
+    depends_on:
+      - backend
+    # ports:
+    #   - "3000:80" # no need to bind this port if we are reaching this through the proxy
+
+  proxy:
+    image: ghcr.io/atomicul/docker-reverse-proxy:v1.1.1
+    restart: on-failure:3
+    depends_on:
+      - frontend
+      - backend
     ports:
-      - "3000:80"
+      - '9069:80'
+    volumes:
+      - './proxy-config:/config'
+    command:
+      - '/ http://frontend:80'
+      - '/api/ http://backend:3001'
