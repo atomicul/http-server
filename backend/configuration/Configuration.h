@@ -7,6 +7,8 @@
 
 #include "abstract/IConfiguration.h"
 
+#include <optional>
+
 namespace http_uploader::configuration {
 
 class Configuration : public abstract::IConfiguration {
@@ -16,7 +18,7 @@ public:
     unsigned int port() override;
 private:
     static std::string formatAsDirectory(std::string_view path);
-    static std::string getEnv(const char *name);
+    static std::optional<std::string> getEnv(const char *name);
 };
 
 } // constants
