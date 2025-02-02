@@ -73,8 +73,7 @@ function App() {
         url = url.substring(0, url.length-1);
       }
 
-      console.log('requesting at', url + "/" + file.name);
-      const res = await axios.post(url + "/" + file.name, file.file, {
+      const res = await axios.post(url + "/" + encodeURIComponent(file.name), file.file, {
         onUploadProgress: (p) => { setFileProgress(file, p.loaded / (p.total ?? Infinity)) }
       })
 
